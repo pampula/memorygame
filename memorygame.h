@@ -2,20 +2,30 @@
 #define MEMORYGAME_H
 
 #include <QMainWindow>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QVector>
+#include <QTimer>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
-{
-  Q_OBJECT
+class MemoryGame : public QMainWindow {
+    Q_OBJECT
 
 public:
-  MainWindow(QWidget *parent = nullptr);
-  ~MainWindow();
+    MemoryGame(QWidget *parent = nullptr);
+    ~MemoryGame();
 
 private:
-  Ui::MainWindow *ui;
+    QGridLayout *gridLayout;
+    QVector<QPushButton*> cards;
+    QPushButton *firstCard;
+    QPushButton *secondCard;
+    QTimer *resetTimer;
+
+    void setupGame();
+    void cardClicked(QPushButton *card);
+
+private slots:
+    void resetCards();
 };
+
 #endif // MEMORYGAME_H

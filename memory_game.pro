@@ -15,8 +15,7 @@ SOURCES += \
 HEADERS += \
   memorygame.h
 
-FORMS += \
-  memorygame.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
