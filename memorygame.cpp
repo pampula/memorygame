@@ -32,7 +32,7 @@ void MemoryGame::setupGame() {
         card->setFixedSize(100, 100);
         setHiddenCardColor(card);
         card->setProperty("value", cardValues[i]);
-        card->setText("?");
+        card->setText("");
 
         connect(card, &QPushButton::clicked, [this, card]() { cardClicked(card); });
 
@@ -73,11 +73,11 @@ void MemoryGame::cardClicked(QPushButton *card) {
 void MemoryGame::resetCards() {
     if (firstCard) {
         setHiddenCardColor(firstCard);
-        firstCard->setText("?");
+        firstCard->setText("");
     }
     if (secondCard) {
         setHiddenCardColor(secondCard);
-        secondCard->setText("?");
+        secondCard->setText("");
     }
     firstCard = nullptr;
     secondCard = nullptr;
@@ -88,7 +88,6 @@ void MemoryGame::setHiddenCardColor(QPushButton *card) {
           "background-color: #578e58;"
           "border-radius: 15px;"
           "border: 2px solid #388E3C;"
-          "color: white;"
           "font-size: 20px;"
     );
 }
