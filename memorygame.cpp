@@ -41,6 +41,7 @@ void MemoryGame::setupGame() {
 }
 
 void MemoryGame::cardClicked(QPushButton *card) {
+    //two cards are already turned
     if (firstCard && secondCard) return;
 
     card->setText(QString::number(card->property("value").toInt()));
@@ -49,6 +50,9 @@ void MemoryGame::cardClicked(QPushButton *card) {
         firstCard = card;
     }
     else if (!secondCard) {
+        // Ensure the second card is not the same as the first
+        if (card == firstCard) return;
+
         secondCard = card;
 
         if (firstCard->property("value") == secondCard->property("value")) {
