@@ -24,6 +24,10 @@ private:
     void setupGame();
     void cardClicked(QPushButton *card);
 
+    void setHiddenCardColor(QPushButton *card);
+    void setTurnedCardColor(QPushButton *card);
+    void disableCard(QPushButton *card);
+
 private slots:
     void resetCards();
 };
