@@ -16,6 +16,8 @@ public:
 
 private:
     int gridSize = 4;
+    QVector<int> cardValues{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                            10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
     QGridLayout *gridLayout;
     QVector<QPushButton*> cards;
@@ -25,7 +27,7 @@ private:
 
     void setupGame();
     void cardClicked(QPushButton *card);
-
+    QVector<int> generateShuffledValues();
     void setCardHidden(QPushButton *card);
     void setCardTurned(QPushButton *card);
     void setCardDisabled(QPushButton *card);

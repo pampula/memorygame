@@ -32,10 +32,8 @@ MemoryGame::MemoryGame(QWidget *parent)
 MemoryGame::~MemoryGame() {}
 
 void MemoryGame::setupGame() {
-    QVector<int> cardValues{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
 
+    QVector<int> cardValues = generateShuffledValues();
     for (int i = 0; i < gridSize * gridSize; ++i) {
         QPushButton *card = new QPushButton(this);
         card->setFixedSize(100, 100);
@@ -58,13 +56,16 @@ void MemoryGame::restartGame() {
         setCardHidden(card);
     }
 
-    QVector<int> cardValues{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
-
+    QVector<int> cardValues = generateShuffledValues();
     for (int i = 0; i < cards.size(); ++i) {
         cards[i]->setProperty("value", cardValues[i]);
     }
+}
+
+QVector<int> MemoryGame::generateShuffledValues() {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
+    return cardValues;
 }
 
 
