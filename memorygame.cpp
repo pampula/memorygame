@@ -6,7 +6,7 @@
 MemoryGame::MemoryGame(QWidget *parent)
     : QMainWindow(parent), firstCard(nullptr), secondCard(nullptr) {
     setWindowTitle("Memory Game");
-    resize(800, 600);
+    resize(1000, 800);
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
