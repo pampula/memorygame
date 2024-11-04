@@ -1,25 +1,51 @@
 #include "memorygame.h"
+#include <QLabel>
 #include <QRandomGenerator>
 #include <QTimer>
 #include <algorithm>
 
-MemoryGame::MemoryGame(QWidget *parent)
-    : QMainWindow(parent), firstCard(nullptr), secondCard(nullptr) {
+MemoryGame::MemoryGame(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("Memory Game");
     resize(1000, 800);
 
-    QWidget *centralWidget = new QWidget(this);
-    setCentralWidget(centralWidget);
+    stackedWidget = new QStackedWidget(this);
+    setCentralWidget(stackedWidget);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
+    createStartView();
+    createGameView();
+
+    stackedWidget->setCurrentWidget(startView);
+}
+
+MemoryGame::~MemoryGame(){}
+
+void MemoryGame::createStartView() {
+    startView = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout(startView);
+
+    QLabel *titleLabel = new QLabel("Select amount of cards");
+    QPushButton *startButton = new QPushButton("Start");
+
+    layout->addWidget(titleLabel);
+    layout->addWidget(startButton);
+    startView->setLayout(layout);
+
+    connect(startButton, &QPushButton::clicked, this, &MemoryGame::startGame);
+
+    stackedWidget->addWidget(startView);
+}
+
+void MemoryGame::createGameView() {
+    gameView = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout(gameView);
 
     QHBoxLayout *controlsLayout = new QHBoxLayout();
     QPushButton *restartButton = new QPushButton("Restart Game", this);
     controlsLayout->addWidget(restartButton);
-    mainLayout->addLayout(controlsLayout);
+    layout->addLayout(controlsLayout);
 
     gridLayout = new QGridLayout();
-    mainLayout->addLayout(gridLayout);
+    layout->addLayout(gridLayout);
 
     setupGame();
 
@@ -27,9 +53,15 @@ MemoryGame::MemoryGame(QWidget *parent)
     resetTimer->setSingleShot(true);
     connect(resetTimer, &QTimer::timeout, this, &MemoryGame::resetCards);
     connect(restartButton, &QPushButton::clicked, this, &MemoryGame::restartGame);
+
+    gameView->setLayout(layout);
+
+    stackedWidget->addWidget(gameView);
 }
 
-MemoryGame::~MemoryGame() {}
+void MemoryGame::startGame() {
+    stackedWidget->setCurrentWidget(gameView);
+}
 
 void MemoryGame::setupGame() {
 
