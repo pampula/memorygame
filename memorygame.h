@@ -15,6 +15,8 @@ public:
     ~MemoryGame();
 
 private:
+    int gridSize = 4;
+
     QGridLayout *gridLayout;
     QVector<QPushButton*> cards;
     QPushButton *firstCard;
@@ -24,12 +26,13 @@ private:
     void setupGame();
     void cardClicked(QPushButton *card);
 
-    void setHiddenCardColor(QPushButton *card);
-    void setTurnedCardColor(QPushButton *card);
-    void disableCard(QPushButton *card);
+    void setCardHidden(QPushButton *card);
+    void setCardTurned(QPushButton *card);
+    void setCardDisabled(QPushButton *card);
 
 private slots:
     void resetCards();
+    void restartGame();
 };
 
 #endif // MEMORYGAME_H

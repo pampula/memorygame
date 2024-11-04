@@ -11,18 +11,27 @@ MemoryGame::MemoryGame(QWidget *parent)
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
-    gridLayout = new QGridLayout(centralWidget);
+    QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
+
+    QHBoxLayout *controlsLayout = new QHBoxLayout();
+    QPushButton *restartButton = new QPushButton("Restart Game", this);
+    controlsLayout->addWidget(restartButton);
+    mainLayout->addLayout(controlsLayout);
+
+    gridLayout = new QGridLayout();
+    mainLayout->addLayout(gridLayout);
+
     setupGame();
 
     resetTimer = new QTimer(this);
     resetTimer->setSingleShot(true);
     connect(resetTimer, &QTimer::timeout, this, &MemoryGame::resetCards);
+    connect(restartButton, &QPushButton::clicked, this, &MemoryGame::restartGame);
 }
 
 MemoryGame::~MemoryGame() {}
 
 void MemoryGame::setupGame() {
-    int gridSize = 4;  // 4x4 grid
     QVector<int> cardValues{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
@@ -30,9 +39,8 @@ void MemoryGame::setupGame() {
     for (int i = 0; i < gridSize * gridSize; ++i) {
         QPushButton *card = new QPushButton(this);
         card->setFixedSize(100, 100);
-        setHiddenCardColor(card);
+        setCardHidden(card);
         card->setProperty("value", cardValues[i]);
-        card->setText("");
 
         connect(card, &QPushButton::clicked, [this, card]() { cardClicked(card); });
 
@@ -40,6 +48,25 @@ void MemoryGame::setupGame() {
         cards.append(card);
     }
 }
+
+void MemoryGame::restartGame() {
+    firstCard = nullptr;
+    secondCard = nullptr;
+
+    for (QPushButton *card : cards) {
+        card->setEnabled(true);
+        setCardHidden(card);
+    }
+
+    QVector<int> cardValues{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
+
+    for (int i = 0; i < cards.size(); ++i) {
+        cards[i]->setProperty("value", cardValues[i]);
+    }
+}
+
 
 void MemoryGame::cardClicked(QPushButton *card) {
     // Two cards are already turned
@@ -49,18 +76,18 @@ void MemoryGame::cardClicked(QPushButton *card) {
 
     if (!firstCard) {
         firstCard = card;
-        setTurnedCardColor(firstCard);
+        setCardTurned(firstCard);
     }
     else if (!secondCard) {
         // Ensure the second card is not the same as the first
         if (card == firstCard) return;
 
         secondCard = card;
-        setTurnedCardColor(secondCard);
+        setCardTurned(secondCard);
 
         if (firstCard->property("value") == secondCard->property("value")) {
-            disableCard(firstCard);
-            disableCard(secondCard);
+            setCardDisabled(firstCard);
+            setCardDisabled(secondCard);
             firstCard = nullptr;
             secondCard = nullptr;
         }
@@ -72,27 +99,26 @@ void MemoryGame::cardClicked(QPushButton *card) {
 
 void MemoryGame::resetCards() {
     if (firstCard) {
-        setHiddenCardColor(firstCard);
-        firstCard->setText("");
+        setCardHidden(firstCard);
     }
     if (secondCard) {
-        setHiddenCardColor(secondCard);
-        secondCard->setText("");
+        setCardHidden(secondCard);
     }
     firstCard = nullptr;
     secondCard = nullptr;
 }
 
-void MemoryGame::setHiddenCardColor(QPushButton *card) {
+void MemoryGame::setCardHidden(QPushButton *card) {
     card->setStyleSheet(
           "background-color: #578e58;"
           "border-radius: 15px;"
           "border: 2px solid #388E3C;"
           "font-size: 20px;"
     );
+    card->setText("");
 }
 
-void MemoryGame::setTurnedCardColor(QPushButton *card) {
+void MemoryGame::setCardTurned(QPushButton *card) {
     card->setStyleSheet(
           "background-color: #bed1be;"
           "border-radius: 15px;"
@@ -102,7 +128,7 @@ void MemoryGame::setTurnedCardColor(QPushButton *card) {
     );
 }
 
-void MemoryGame::disableCard(QPushButton *card) {
+void MemoryGame::setCardDisabled(QPushButton *card) {
     card->setEnabled(false);
     card->setStyleSheet(
           "background-color: #cccccc;"
