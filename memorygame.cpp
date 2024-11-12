@@ -13,7 +13,6 @@ MemoryGame::MemoryGame(QWidget *parent) : QMainWindow(parent) {
     setCentralWidget(stackedWidget);
 
     createStartView();
-    createGameView();
 
     stackedWidget->setCurrentWidget(startView);
 }
@@ -42,7 +41,11 @@ void MemoryGame::createStartView() {
   startButton->setMaximumWidth(150);
   startButton->setStyleSheet(
       "QPushButton {"
-      "    font-size: 16px; color: white; background-color: #4285f4; border-radius: 8px; padding: 8px 16px;"
+        "font-size: 16px;"
+        "color: white;"
+        "background-color: #4285f4;"
+        "border-radius: 8px;"
+        "padding: 8px 16px;"
       "}"
       "QPushButton:hover { background-color: #3072e0; }"
       "QPushButton:pressed { background-color: #2c5dab; }"
@@ -54,9 +57,21 @@ void MemoryGame::createStartView() {
 
   startView->setLayout(mainLayout);
 
+  connect(cardAmountSelector, &QComboBox::currentTextChanged, this, [=](const QString &text) {
+      setGridSize(text);
+  });
   connect(startButton, &QPushButton::clicked, this, &MemoryGame::startGame);
 
   stackedWidget->addWidget(startView);
+}
+
+void MemoryGame::setGridSize(QString size) {
+  if (size == "4x4") {
+      gridSize = 4;
+    }
+  else {
+      gridSize = 6;
+    }
 }
 
 void MemoryGame::createGameView() {
@@ -93,6 +108,7 @@ void MemoryGame::createGameView() {
 }
 
 void MemoryGame::startGame() {
+    createGameView();
     stackedWidget->setCurrentWidget(gameView);
 }
 
