@@ -128,6 +128,14 @@ void MemoryGame::restartGame() {
 }
 
 QVector<int> MemoryGame::generateShuffledValues() {
+    int totalPairs = (gridSize * gridSize) / 2;
+    QVector<int> cardValues;
+
+    for (int i = 1; i <= totalPairs; ++i) {
+        cardValues.append(i);
+        cardValues.append(i);
+    }
+
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(cardValues.begin(), cardValues.end(), std::default_random_engine(seed));
     return cardValues;
