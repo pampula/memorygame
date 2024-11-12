@@ -1,4 +1,5 @@
 #include "memorygame.h"
+#include <QComboBox>
 #include <QLabel>
 #include <QRandomGenerator>
 #include <QTimer>
@@ -20,19 +21,42 @@ MemoryGame::MemoryGame(QWidget *parent) : QMainWindow(parent) {
 MemoryGame::~MemoryGame(){}
 
 void MemoryGame::createStartView() {
-    startView = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout(startView);
+  startView = new QWidget;
+  QVBoxLayout *mainLayout = new QVBoxLayout(startView);
 
-    QLabel *titleLabel = new QLabel("Select amount of cards");
-    QPushButton *startButton = new QPushButton("Start");
+  QLabel *titleLabel = new QLabel("Memory Game");
+  titleLabel->setStyleSheet("font-size: 30px; font-weight: bold; color: #4a4a4a;");
+  titleLabel->setAlignment(Qt::AlignCenter);
 
-    layout->addWidget(titleLabel);
-    layout->addWidget(startButton);
-    startView->setLayout(layout);
+  QHBoxLayout *selectionLayout = new QHBoxLayout();
+  QLabel *cardAmountLabel = new QLabel("Number of Cards:");
+  QComboBox *cardAmountSelector = new QComboBox();
+  cardAmountSelector->addItems(gridSizes);
+  cardAmountSelector->setMaximumWidth(200);
+  cardAmountLabel->setStyleSheet("font-size: 16px; color: #4a4a4a;");
+  selectionLayout->addWidget(cardAmountLabel);
+  selectionLayout->addWidget(cardAmountSelector);
+  selectionLayout->setAlignment(Qt::AlignCenter);
 
-    connect(startButton, &QPushButton::clicked, this, &MemoryGame::startGame);
+  QPushButton *startButton = new QPushButton("Start Game");
+  startButton->setMaximumWidth(150);
+  startButton->setStyleSheet(
+      "QPushButton {"
+      "    font-size: 16px; color: white; background-color: #4285f4; border-radius: 8px; padding: 8px 16px;"
+      "}"
+      "QPushButton:hover { background-color: #3072e0; }"
+      "QPushButton:pressed { background-color: #2c5dab; }"
+  );
 
-    stackedWidget->addWidget(startView);
+  mainLayout->addWidget(titleLabel);
+  mainLayout->addLayout(selectionLayout);
+  mainLayout->addWidget(startButton, 0, Qt::AlignCenter);
+
+  startView->setLayout(mainLayout);
+
+  connect(startButton, &QPushButton::clicked, this, &MemoryGame::startGame);
+
+  stackedWidget->addWidget(startView);
 }
 
 void MemoryGame::createGameView() {
@@ -41,6 +65,15 @@ void MemoryGame::createGameView() {
 
     QHBoxLayout *controlsLayout = new QHBoxLayout();
     QPushButton *restartButton = new QPushButton("Restart Game", this);
+    restartButton->setMaximumWidth(150);
+    restartButton->setStyleSheet(
+          "QPushButton {"
+          "    font-size: 16px; color: white; background-color: #4285f4; border-radius: 8px; padding: 8px 16px;"
+          "}"
+          "QPushButton:hover { background-color: #3072e0; }"
+          "QPushButton:pressed { background-color: #2c5dab; }"
+      );
+
     controlsLayout->addWidget(restartButton);
     layout->addLayout(controlsLayout);
 
@@ -143,19 +176,23 @@ void MemoryGame::resetCards() {
 
 void MemoryGame::setCardHidden(QPushButton *card) {
     card->setStyleSheet(
-          "background-color: #578e58;"
-          "border-radius: 15px;"
-          "border: 2px solid #388E3C;"
-          "font-size: 20px;"
+          "QPushButton {"
+            "background-color: #4285f4;"
+            "border-radius: 15px;"
+            "border: 2px solid #4285f4;"
+            "font-size: 20px;"
+          "}"
+          "QPushButton:hover { background-color: #3072e0; }"
+          "QPushButton:pressed { background-color: #2c5dab; }"
     );
     card->setText("");
 }
 
 void MemoryGame::setCardTurned(QPushButton *card) {
     card->setStyleSheet(
-          "background-color: #bed1be;"
+          "background-color: #9dbdf2;"
           "border-radius: 15px;"
-          "border: 2px solid #bed1be;"
+          "border: 2px solid #9dbdf2;"
           "color: black;"
           "font-size: 20px;"
     );
